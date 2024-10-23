@@ -1,94 +1,1226 @@
 {
-  "openapi": "3.0.1",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
+  "openapi": "3.0.0",
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+    "/api/v1/agents": {
+      "post": {
+        "operationId": "AgentsController_create",
+        "summary": "Create a new agent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgentDto"
+              }
             }
           }
+        },
+        "responses": {
+          "201": {
+            "description": "The agent has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAgentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. System prompt must be between 128 and 4096 characters."
+          }
+        },
+        "tags": [
+          "agents"
         ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "AgentsController_findAll",
+        "summary": "Get all agents",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Return all agents.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/AgentWithModel"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "agents"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/agents/{id}": {
+      "get": {
+        "operationId": "AgentsController_findOne",
+        "summary": "Get an agent by id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the agent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentWithModel"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "agents"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "AgentsController_update",
+        "summary": "Update an agent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAgentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The agent has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAgentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. System prompt must be between 128 and 4096 characters."
+          }
+        },
+        "tags": [
+          "agents"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "AgentsController_remove",
+        "summary": "Delete an agent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The agent has been successfully deleted."
+          }
+        },
+        "tags": [
+          "agents"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/agents/{id}/tools": {
+      "delete": {
+        "operationId": "AgentsController_detachTool",
+        "summary": "Remove tool from agent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tool has been been detached successfully from agent."
+          }
+        },
+        "tags": [
+          "agents"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/agents/{id}/knowledge-store": {
+      "delete": {
+        "operationId": "AgentsController_detachKnowledgeStore",
+        "summary": "Remove knowledge store from agent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The knowledge store is been detached successfully from agent."
+          },
+          "400": {
+            "description": "Bad Request. Agent id is required"
+          }
+        },
+        "tags": [
+          "agents"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/models": {
+      "post": {
+        "operationId": "ModelsController_create",
+        "summary": "Create a new model",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateModelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The model has been successfully created."
+          }
+        },
+        "tags": [
+          "models"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ModelsController_findAll",
+        "summary": "Get all models",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return all models."
+          }
+        },
+        "tags": [
+          "models"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/models/{id}": {
+      "get": {
+        "operationId": "ModelsController_findOne",
+        "summary": "Get a model by id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the model."
+          }
+        },
+        "tags": [
+          "models"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "ModelsController_update",
+        "summary": "Update a model",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateModelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The model has been successfully updated."
+          }
+        },
+        "tags": [
+          "models"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ModelsController_remove",
+        "summary": "Delete a model",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The model has been successfully deleted."
+          },
+          "400": {
+            "description": "Bad request. The model cannot be deleted."
+          }
+        },
+        "tags": [
+          "models"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/chat/sessions": {
+      "post": {
+        "operationId": "ChatController_createChatSession",
+        "summary": "Create a new chat session",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The chat session has been created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatSessionResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "chat"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ChatController_listChatSessions",
+        "summary": "List chat sessions",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "agentId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "IDLE",
+                "ACTIVE",
+                "CLOSED"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat sessions have been retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedChatSessionsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "chat"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/chat/sessions/{sessionId}/messages": {
+      "post": {
+        "operationId": "ChatController_sendMessage",
+        "summary": "Send a message to the chat",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The message stream has started."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Chat session not found"
+          }
+        },
+        "tags": [
+          "chat"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ChatController_listMessages",
+        "summary": "List all messages of the chat",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The messages have been retrieved successfully."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Chat session not found"
+          }
+        },
+        "tags": [
+          "chat"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/chat/sessions/{sessionId}": {
+      "get": {
+        "operationId": "ChatController_getChatSession",
+        "summary": "Get a chat session by ID",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat session has been retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatSessionResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Chat session not found"
+          }
+        },
+        "tags": [
+          "chat"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/chat/sessions/{sessionId}/close": {
+      "patch": {
+        "operationId": "ChatController_closeChatSession",
+        "summary": "Close a chat session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat session has been closed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatSessionResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Chat session not found"
+          }
+        },
+        "tags": [
+          "chat"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/chat/histories/by-agent-id/{agentId}": {
+      "get": {
+        "operationId": "ChatController_getHistoryByAgentId",
+        "summary": "Get chat by agent Id",
+        "parameters": [
+          {
+            "name": "agentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat againts agent found successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatHistoryResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "chat"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/meters/{meter}": {
+      "get": {
+        "operationId": "MetersController_getMeters",
+        "summary": "Get meters",
+        "parameters": [
+          {
+            "name": "groupingFields",
+            "required": true,
+            "in": "query",
+            "description": "Fields to group by, example: ['userId', 'agentId', 'sessionId', 'runId', 'modelName', 'modelProvider', 'type', 'env']",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "source",
+            "required": true,
+            "in": "query",
+            "description": "Source of the meter, for now can be only chat-engine, this can be helpfully if same metering system is used by multiple sources",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "description": "Chat-engine User's id, can have multiple agents attached to it",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agentId",
+            "required": true,
+            "in": "query",
+            "description": "Agent id, can have multiple sessions attached to it",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "query",
+            "description": "Session id, can have multiple message attached to it",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "runId",
+            "required": true,
+            "in": "query",
+            "description": "Run id, a run represent a session send+reply (input output) message, can have multiple generations attached to it, with inputs and outputs",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "modelName",
+            "required": true,
+            "in": "query",
+            "description": "Model name, example: gpt-4o-mini, gpt-4o ....",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "modelProvider",
+            "required": true,
+            "in": "query",
+            "description": "Model provider, example: openai, anthropic ....",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "query",
+            "description": "Type of the meter, input or output",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "env",
+            "required": true,
+            "in": "query",
+            "description": "Environment of the meter, example: dev, prod ....",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "window",
+            "required": true,
+            "in": "query",
+            "description": "Even sum aggregations window",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "description": "Start date in UTC, bellow minute precision will be ignored",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "description": "End date in UTC, bellow minute precision will be ignored, should greater than Start date",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "meter",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all meters."
+          }
+        },
+        "tags": [
+          "meters"
+        ]
+      }
+    },
+    "/api/v1/tools": {
+      "post": {
+        "operationId": "ToolsController_create",
+        "summary": "Create a new tool",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "The tool data to create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateToolDto"
+              },
+              "examples": {
+                "default": {
+                  "summary": "FUNCTION_TOOL type tool created",
+                  "value": {
+                    "name": "GET_WEATHER_FUNCTION_TEST_FINAL",
+                    "description": "This is tools created for Weather type of function type",
+                    "type": "FUNCTION_TOOL",
+                    "agentId": "agent-id",
+                    "userId": "custom_user_id",
+                    "functionTool": {
+                      "name": "get_current_temperature",
+                      "description": "Get the current temperature for a specific location",
+                      "payload": {
+                        "location": "{{location}}",
+                        "unit": "{{unit}}"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tool created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input."
+          }
+        },
+        "tags": [
+          "tools"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ToolsController_getAll",
+        "summary": "Get all tools",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all tools.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ToolsResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "tools"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/tools/{id}": {
+      "get": {
+        "operationId": "ToolsController_getById",
+        "summary": "Get a tool by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID of the tool to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tool found successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolsResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tool not found."
+          }
+        },
+        "tags": [
+          "tools"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "ToolsController_update",
+        "summary": "Update an existing tool",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the tool to update",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The tool data to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateToolDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tool updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Tool not found."
+          }
+        },
+        "tags": [
+          "tools"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ToolsController_remove",
+        "summary": "Delete a tool",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the tool to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tool deleted successfully."
+          },
+          "404": {
+            "description": "Tool not found."
+          }
+        },
+        "tags": [
+          "tools"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
+          "503": {
+            "description": "The Health Check is not successful",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -96,99 +1228,1009 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/api/v1/dashboard/stats": {
+      "get": {
+        "operationId": "DashboardController_getStats",
+        "summary": "Get all user stats",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
+            "name": "window",
             "required": true,
+            "in": "query",
+            "description": "Even sum aggregations window",
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "description": "Start date in UTC, bellow minute precision will be ignored",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "description": "End date in UTC, bellow minute precision will be ignored, should greater than Start date",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "200": {
+            "description": "Return Dashboard Stats"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/dashboard/agent-summary": {
+      "get": {
+        "operationId": "DashboardController_getAgentSummary",
+        "summary": "Get all user stats",
+        "parameters": [
+          {
+            "name": "window",
+            "required": true,
+            "in": "query",
+            "description": "Even sum aggregations window",
+            "schema": {
+              "type": "string"
+            }
           },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "description": "Start date in UTC, bellow minute precision will be ignored",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "description": "End date in UTC, bellow minute precision will be ignored, should greater than Start date",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
             }
           }
-        }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return Dashboard Stats"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     }
   },
+  "info": {
+    "title": "AI Agent Builder API",
+    "description": "API for creating and managing AI agents",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
   "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
     "schemas": {
-      "Plant": {
+      "KnowledgeStoreParams": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateAgentDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "The full name of the agent"
+          },
+          "welcomeText": {
+            "type": "string",
+            "description": "The Welcome message for the agent (2-1000 characters)"
+          },
+          "systemPrompt": {
+            "type": "string",
+            "description": "The system prompt for the agent (min 128 characters)"
+          },
+          "role": {
+            "type": "string",
+            "description": "The Role of the agent, like Du Telecom customer support"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the agent"
+          },
+          "modelId": {
+            "type": "string",
+            "description": "The ID of the model"
+          },
+          "temperature": {
+            "type": "number",
+            "description": "The temperature for the model (0 to 1)",
+            "default": 0
+          },
+          "top_p": {
+            "type": "number",
+            "description": "The top_p value for the model"
+          },
+          "top_k": {
+            "type": "number",
+            "description": "The top_k value for the model"
+          },
+          "frequency_penalty": {
+            "type": "number",
+            "description": "The frequency_penalty for the model"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether the agent is public or not",
+            "default": false
+          },
+          "avatar": {
+            "type": "string",
+            "description": "The avatar file for the agent (optional, max 2MB, image files only)",
+            "format": "binary"
+          },
+          "maxTimeoutInSeconds": {
+            "type": "number",
+            "description": "Max timeout for an agent in seconds"
+          },
+          "toolIds": {
+            "description": "The tool ids",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "knowledgeStoreId": {
+            "type": "string",
+            "description": "The knowledge store id"
+          },
+          "knowledgeStoreParams": {
+            "description": "The knowledge store id",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/KnowledgeStoreParams"
+              }
+            ]
+          }
+        },
         "required": [
-          "name"
-        ],
+          "fullName",
+          "welcomeText",
+          "systemPrompt",
+          "role",
+          "description",
+          "modelId",
+          "temperature",
+          "isPublic",
+          "maxTimeoutInSeconds",
+          "toolIds",
+          "knowledgeStoreId",
+          "knowledgeStoreParams"
+        ]
+      },
+      "AgentWithModel": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateAgentDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "The full name of the agent"
+          },
+          "welcomeText": {
+            "type": "string",
+            "description": "Welcome text for the agent (2-1000 characters)"
+          },
+          "systemPrompt": {
+            "type": "string",
+            "description": "The system prompt for the agent (128-4096 characters)"
+          },
+          "role": {
+            "type": "string",
+            "description": "The Role of the agent, like Du Telecom customer support"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the agent"
+          },
+          "modelId": {
+            "type": "string",
+            "description": "The ID of the model"
+          },
+          "temperature": {
+            "type": "number",
+            "description": "The temperature for the model (0 to 1)",
+            "default": 0
+          },
+          "top_p": {
+            "type": "number",
+            "description": "The top_p value for the model"
+          },
+          "top_k": {
+            "type": "number",
+            "description": "The top_k value for the model"
+          },
+          "frequency_penalty": {
+            "type": "number",
+            "description": "The frequency_penalty for the model"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether the agent is public or not",
+            "default": false
+          },
+          "avatar": {
+            "type": "string",
+            "description": "The avatar file for the agent (optional, max 2MB, image files only). Set to null to remove existing avatar.",
+            "format": "binary"
+          },
+          "maxTimeoutInSeconds": {
+            "type": "number",
+            "description": "Max timeout for an agent in seconds"
+          },
+          "toolIds": {
+            "description": "The tool ids",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "knowledgeStoreId": {
+            "type": "string",
+            "description": "The knowledge store id"
+          },
+          "knowledgeStoreParams": {
+            "description": "The knowledge store id",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/KnowledgeStoreParams"
+              }
+            ]
+          }
+        }
+      },
+      "DetachAgentToolsDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "DetachAgentKnowledgeStoreDto": {
+        "type": "object",
+        "properties": {
+          "knowledgeStoreId": {
+            "type": "string",
+            "description": "The knowledge store id"
+          }
+        },
+        "required": [
+          "knowledgeStoreId"
+        ]
+      },
+      "CreateModelDto": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "The provider of the model"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the model"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the model"
+          },
+          "label": {
+            "type": "string",
+            "description": "The label of the model"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the model"
+          },
+          "vision": {
+            "type": "boolean",
+            "description": "Whether the model supports vision",
+            "default": false
+          },
+          "audio": {
+            "type": "boolean",
+            "description": "Whether the model supports audio",
+            "default": false
+          },
+          "inputCostPer1mTokens": {
+            "type": "number",
+            "description": "Cost of one input million tokens"
+          },
+          "outputCostPer1mTokens": {
+            "type": "number",
+            "description": "Cost of one output million tokens"
+          },
+          "apikeys": {
+            "description": "API keys for the model",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "provider",
+          "name",
+          "type",
+          "label",
+          "vision",
+          "audio",
+          "inputCostPer1mTokens",
+          "outputCostPer1mTokens",
+          "apikeys"
+        ]
+      },
+      "UpdateModelDto": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "The provider of the model"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the model"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the model"
+          },
+          "label": {
+            "type": "string",
+            "description": "The label of the model"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the model"
+          },
+          "vision": {
+            "type": "boolean",
+            "description": "Whether the model supports vision",
+            "default": false
+          },
+          "audio": {
+            "type": "boolean",
+            "description": "Whether the model supports audio",
+            "default": false
+          },
+          "inputCostPer1mTokens": {
+            "type": "number",
+            "description": "Cost of one input million tokens"
+          },
+          "outputCostPer1mTokens": {
+            "type": "number",
+            "description": "Cost of one output million tokens"
+          },
+          "apikeys": {
+            "description": "API keys for the model",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateChatSessionDto": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "description": "The ID of the agent for this chat session"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Metadata for the chat session (max 4096 characters)"
+          }
+        },
+        "required": [
+          "metadata"
+        ]
+      },
+      "ChatSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the chat session"
+          },
+          "agent": {
+            "type": "object",
+            "description": "The details of the current agent"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Metadata for the chat session"
+          },
+          "state": {
+            "type": "string",
+            "description": "The current state of the chat session",
+            "enum": [
+              "IDLE",
+              "ACTIVE",
+              "CLOSED"
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The creation timestamp of the chat session"
+          }
+        },
+        "required": [
+          "id",
+          "agent",
+          "metadata",
+          "state",
+          "createdAt"
+        ]
+      },
+      "CreateChatMessageDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The content of the message"
+          },
+          "stream": {
+            "type": "object",
+            "description": "Whether to stream the message, default to true",
+            "default": true
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "ChatSessionListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "agentName": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "IDLE",
+              "ACTIVE",
+              "CLOSED"
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "messageCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "agentId",
+          "agentName",
+          "state",
+          "createdAt",
+          "messageCount"
+        ]
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          },
+          "totalCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "currentPage",
+          "pageSize",
+          "totalPages",
+          "totalCount"
+        ]
+      },
+      "PaginatedChatSessionsResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatSessionListItem"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "AgentConfig": {
+        "type": "object",
+        "properties": {
+          "maxTimeout": {
+            "type": "number",
+            "example": "10",
+            "description": "Max time out"
+          },
+          "timeoutMessage": {
+            "type": "string",
+            "example": "Timeout happened..!!",
+            "description": "Timeout Message"
+          },
+          "idleTimeout": {
+            "type": "number",
+            "example": "15",
+            "description": "Idle timeout"
+          },
+          "idleTimeoutMessage": {
+            "type": "string",
+            "example": "Idle Timeout happened..!!",
+            "description": "Idle Timeout Message"
+          }
+        },
+        "required": [
+          "maxTimeout",
+          "timeoutMessage",
+          "idleTimeout",
+          "idleTimeoutMessage"
+        ]
+      },
+      "AgentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "Agent Id",
+            "description": "Agent Id"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "fullName",
+            "description": "Agent full name"
+          },
+          "role": {
+            "type": "string",
+            "example": "USER",
+            "description": "Roles for chat services, It can be  SYSTEM, USER, ASSISTANT, TOOL"
+          },
+          "description": {
+            "type": "string",
+            "example": "Agent Description",
+            "description": "Description of the agent"
+          },
+          "welcomeText": {
+            "type": "string",
+            "example": "Hello, how may I help you????",
+            "description": "This is the welcome text message."
+          },
+          "systemPrompt": {
+            "type": "string",
+            "example": "Prompt Message",
+            "description": "Prompt Message"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "example": "URL",
+            "description": "AVATAR url"
+          },
+          "knowledgeBases": {
+            "example": [
+              "Knowledge Base"
+            ],
+            "description": "Knowledge base algorithm",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tools": {
+            "example": [
+              "tools"
+            ],
+            "description": "Tools if anything associated",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "agentConfig": {
+            "example": [
+              "Agent Config"
+            ],
+            "description": "Agent configuration",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AgentConfig"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "fullName",
+          "role",
+          "description",
+          "welcomeText",
+          "systemPrompt",
+          "avatarUrl",
+          "knowledgeBases",
+          "tools",
+          "agentConfig"
+        ]
+      },
+      "ChatMessage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "Chat Unique Id",
+            "description": "Unique Id agains the chat"
+          },
+          "content": {
+            "type": "string",
+            "example": "Who is the PM of India ????",
+            "description": "This will be the chat content."
+          },
+          "role": {
+            "type": "string",
+            "example": "SYSTEM",
+            "description": "Roles for chat services, It can be  SYSTEM, USER, ASSISTANT, TOOL"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Chat message created time"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Chat message updated time"
+          },
+          "images": {
+            "example": "Status",
+            "description": "Chat  status",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "content",
+          "role",
+          "createdAt",
+          "updatedAt",
+          "images"
+        ]
+      },
+      "ChatHistoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "Unique Id",
+            "description": "Unique Id"
+          },
+          "status": {
+            "type": "string",
+            "example": "Status",
+            "description": "Chat session status"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "ChatSession created time"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "ChatSession updated time"
+          },
+          "lastActivityAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "ChatSession updated time"
+          },
+          "summary": {
+            "type": "string",
+            "example": "Summary",
+            "description": "Summary against the chat session"
+          },
+          "agent": {
+            "description": "Agent Dto instance holding agent information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AgentDto"
+              }
+            ]
+          },
+          "messages": {
+            "description": "Chat messages",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChatMessage"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "lastActivityAt",
+          "summary",
+          "agent",
+          "messages"
+        ]
+      },
+      "CreateApiToolDTO": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://abc.com",
+            "description": "API_TOOL url "
+          },
+          "method": {
+            "type": "string",
+            "example": "GET",
+            "description": "Method can be GET,PUT,POST,DELETE,PATCH"
+          },
+          "body": {
+            "type": "object",
+            "example": {
+              "title": "{{title}}",
+              "content": "{{content}}",
+              "userId": "{{userId}}"
+            },
+            "description": "Payload of the API_TOOL if available for example {\"body\":{\"title\":\"First Post\", \"content\":\"Dummy content\",\"userId\",10}}"
+          },
+          "headers": {
+            "type": "object",
+            "example": {
+              "Content-type": "application/json",
+              "Authorization": "Bearer your-api-token"
+            },
+            "description": "Custom headers for Tool"
+          },
+          "params": {
+            "type": "object",
+            "example": {
+              "title": "{{title}}"
+            },
+            "description": "Params for url"
+          }
+        },
+        "required": [
+          "url",
+          "method"
+        ]
+      },
+      "CreateFunctionsToolDTO": {
         "type": "object",
         "properties": {
           "name": {
-            "description": "The name of the plant",
-            "type": "string"
+            "type": "string",
+            "example": "get_current_temperature",
+            "description": "Name of the function like get_current_temperature"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+          "description": {
+            "type": "string",
+            "example": "Get the current temperature for a specific location",
+            "description": "Description of the function like mentioned as \"Get the current temperature for a specific location.\""
           },
-          {
-            "required": [
-              "id"
-            ],
+          "payload": {
             "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
+            "example": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city and state, e.g., San Francisco, CA"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "Celsius",
+                    "Fahrenheit"
+                  ],
+                  "description": "The temperature unit to use. Infer this from the user's location."
+                }
+              },
+              "required": [
+                "location",
+                "unit"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Parameters of the function in JSON format, This can be changed as per any Json structure"
           }
+        },
+        "required": [
+          "payload"
         ]
       },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
+      "CreateToolDto": {
         "type": "object",
         "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+          "name": {
+            "type": "string",
+            "example": "GET_TEMPERATURE",
+            "description": "Name of the tool"
           },
-          "message": {
-            "type": "string"
+          "description": {
+            "type": "string",
+            "example": "This is a sample tool for getting temperature.",
+            "description": "Description of the tool"
+          },
+          "type": {
+            "type": "string",
+            "example": "API_TOOL",
+            "description": "Type of the tool, it can be  FUNCTION_TOOL, API_TOOL, KNOWLEDGE_BASE",
+            "enum": [
+              "FUNCTION_TOOL",
+              "API_TOOL"
+            ]
+          },
+          "apiTool": {
+            "description": "Tool definition associated with the tool",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateApiToolDTO"
+              }
+            ]
+          },
+          "functionTool": {
+            "description": "Functions associated with the tool",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateFunctionsToolDTO"
+              }
+            ]
+          },
+          "ajvPropertiesSchema": {
+            "type": "object",
+            "description": "Parameters of the function in JSON format, This can be changed as per any Json structure"
           }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+        },
+        "required": [
+          "name",
+          "description",
+          "type",
+          "ajvPropertiesSchema"
+        ]
+      },
+      "ToolsResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "unique id",
+            "description": "unique id "
+          },
+          "name": {
+            "type": "string",
+            "example": "tool name",
+            "description": "Name of the tool"
+          },
+          "description": {
+            "type": "string",
+            "example": "This is a sample tool for getting temperature.",
+            "description": "Description of the tool"
+          },
+          "type": {
+            "type": "string",
+            "example": "API_TOOL",
+            "description": "Type of the tool, it can be  FUNCTION_TOOL, API_TOOL",
+            "enum": [
+              "FUNCTION_TOOL",
+              "API_TOOL"
+            ]
+          },
+          "userId": {
+            "type": "string",
+            "example": "user-id",
+            "description": "User creating the tool"
+          },
+          "apiTool": {
+            "description": "ApiTool tool",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateApiToolDTO"
+              }
+            ]
+          },
+          "functionTool": {
+            "description": "FunctionTool",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateFunctionsToolDTO"
+              }
+            ]
+          },
+          "ajvPropertiesSchema": {
+            "type": "object",
+            "description": "Parameters of the function in JSON format, This can be changed as per any Json structure"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Tool created time"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Tool updated time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "type",
+          "userId",
+          "ajvPropertiesSchema",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateToolDto": {
+        "type": "object",
+        "properties": {}
       }
     }
   }

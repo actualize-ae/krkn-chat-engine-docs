@@ -1,9 +1,8 @@
 {
-  "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Chat Engine",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/light.svg",
+    "light": "/logo/dark.png"
   },
   "favicon": "/favicon.svg",
   "colors": {
@@ -15,12 +14,6 @@
       "to": "#07C983"
     }
   },
-  "topbarLinks": [
-    {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
-    }
-  ],
   "topbarCtaButton": {
     "name": "Dashboard",
     "url": "https://dashboard.mintlify.com"
@@ -31,55 +24,63 @@
       "url": "api-reference"
     }
   ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
-    }
-  ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "agents",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "api-reference/agents/get-all-agents",
+        "api-reference/agents/create-a-new-agent",
+        "api-reference/agents/get-an-agent-by-id",
+        "api-reference/agents/delete-an-agent",
+        "api-reference/agents/update-an-agent",
+        "api-reference/agents/remove-tool-from-agent",
+        "api-reference/agents/remove-knowledge-store-from-agent"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "models",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "api-reference/models/get-all-models",
+        "api-reference/models/create-a-new-model",
+        "api-reference/models/get-a-model-by-id",
+        "api-reference/models/delete-a-model",
+        "api-reference/models/update-a-model"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "chat",
       "pages": [
-        "api-reference/introduction"
+        "api-reference/chat/list-chat-sessions",
+        "api-reference/chat/create-a-new-chat-session",
+        "api-reference/chat/list-all-messages-of-the-chat",
+        "api-reference/chat/send-a-message-to-the-chat",
+        "api-reference/chat/get-a-chat-session-by-id",
+        "api-reference/chat/close-a-chat-session",
+        "api-reference/chat/get-chat-by-agent-id"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "meters",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "api-reference/meters/get-meters"
+      ]
+    },
+    {
+      "group": "tools",
+      "pages": [
+        "api-reference/tools/get-all-tools",
+        "api-reference/tools/create-a-new-tool",
+        "api-reference/tools/get-a-tool-by-id",
+        "api-reference/tools/delete-a-tool",
+        "api-reference/tools/update-an-existing-tool"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/get-apiv1health",
+        "api-reference/get-all-user-stats",
+        "api-reference/get-all-user-stats-1"
       ]
     }
   ],
@@ -87,5 +88,12 @@
     "x": "https://x.com/mintlify",
     "github": "https://github.com/mintlify",
     "linkedin": "https://linkedin.com/company/mintlify"
-  }
+  },
+  "openapi": "http://localhost:9000/api/v1/docs/json",
+  "api": {
+   "baseUrl": "https://krkn-server.actualize.ae/api",
+   "auth": {
+       "method": "bearer"
+   }
+ }
 }
