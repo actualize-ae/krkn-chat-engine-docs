@@ -1,10 +1,10 @@
 {
   "name": "Chat Engine",
   "logo": {
-    "dark": "/logo/light.svg",
-    "light": "/logo/dark.png"
+    "dark": "/logo/krkn-dark.svg",
+    "light": "/logo/krkn-light.svg"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo/krkn-dark.svg",
   "colors": {
     "primary": "#0D9373",
     "light": "#07C983",
