@@ -20,11 +20,43 @@
   },
   "tabs": [
     {
+      "name": "Documentation",
+      "url": "documentation"
+    },
+    {
       "name": "API Reference",
       "url": "api-reference"
     }
   ],
   "navigation": [
+    {
+      "group": "Introduction",
+      "pages": [
+        "documentation/introduction"
+      ]
+    },
+    {
+      "group": "General",
+      "pages": [
+        "documentation/general/how-it-works",
+        "documentation/general/pricing"
+      ]
+    },
+    {
+      "group": "Quickstart",
+      "pages": [
+        "documentation/quickstart/dashboard",
+        "documentation/quickstart/inbound-calling"
+      ]
+    },
+    {
+      "group": "Providers",
+      "pages": [
+        "documentation/providers/chat",
+        "documentation/providers/voice",
+        "documentation/providers/whatsapp"
+      ]
+    },
     {
       "group": "agents",
       "pages": [
